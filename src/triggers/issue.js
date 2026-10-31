@@ -1,10 +1,10 @@
 /**
- * Jira issue created/updated trigger.
+ * Jira issue created/updated/deleted trigger.
  * Keep it fast: decide if the issue matters, then hand off to the queue.
  */
 import { enqueue } from '../services/queue';
 import { getSettings } from '../services/settings';
-import { setJobState } from '../db/queries';
+import { setJobState, deleteEvent } from '../db/queries';
 import { DEMO_LABEL } from '../services/analyzer';
 
 const TEXT_FIELDS = new Set(['summary', 'description', 'labels', 'status', 'resolution']);
@@ -13,6 +13,13 @@ export async function issueTrigger(event) {
   try {
     const issue = event.issue;
     if (!issue) return;
+
+    // A deleted issue must stop counting as history (and its data must go).
+    if (event.eventType === 'avi:jira:deleted:issue') {
+      await deleteEvent(issue.id);
+      return;
+    }
+
     const labels = issue.fields?.labels || [];
     if (labels.includes(DEMO_LABEL) && event.eventType === 'avi:jira:created:issue') return; // demo loader scores these itself
 

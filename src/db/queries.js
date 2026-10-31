@@ -52,6 +52,8 @@ function rowToEvent(r) {
     sopRef: r.sop_ref || null,
     ownerName: r.owner_name || null,
     resolverName: r.resolver_name || null,
+    ownerAccountId: r.owner_account_id || null,
+    resolverAccountId: r.resolver_account_id || null,
     eventDate: toDay(r.event_date),
     closedDate: toDay(r.closed_date),
     status: r.status,
@@ -67,15 +69,16 @@ export async function upsertEvent(e) {
   await run(
     `INSERT INTO events (issue_id, issue_key, project_id, kind, summary, equipment, product, failure_mode,
        root_cause, keywords, sop_ref, owner_name, resolver_name, event_date, closed_date, status, text_hash,
-       method, is_demo, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       method, is_demo, updated_at, owner_account_id, resolver_account_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON DUPLICATE KEY UPDATE issue_key = VALUES(issue_key), project_id = VALUES(project_id), kind = VALUES(kind),
        summary = VALUES(summary), equipment = VALUES(equipment), product = VALUES(product),
        failure_mode = VALUES(failure_mode), root_cause = VALUES(root_cause), keywords = VALUES(keywords),
        sop_ref = VALUES(sop_ref), owner_name = VALUES(owner_name), resolver_name = VALUES(resolver_name),
        event_date = VALUES(event_date), closed_date = VALUES(closed_date), status = VALUES(status),
        text_hash = VALUES(text_hash), method = VALUES(method), is_demo = VALUES(is_demo),
-       updated_at = VALUES(updated_at)`,
+       updated_at = VALUES(updated_at), owner_account_id = VALUES(owner_account_id),
+       resolver_account_id = VALUES(resolver_account_id)`,
     [
       String(e.issueId),
       e.issueKey,
@@ -97,6 +100,8 @@ export async function upsertEvent(e) {
       e.method || null,
       e.isDemo ? 1 : 0,
       nowSql(),
+      e.ownerAccountId || null,
+      e.resolverAccountId || null,
     ]
   );
 }
@@ -129,6 +134,36 @@ export async function deleteEvent(issueId) {
 export async function getDemoEvents() {
   const rows = await run('SELECT * FROM events WHERE is_demo = 1');
   return rows.map(rowToEvent);
+}
+
+// ---------- personal data (Atlassian personal data reporting) ----------
+
+/** Every account ID we hold, with the last time we stored data for it. */
+export async function getStoredAccounts() {
+  const rows = await run(
+    `SELECT acc, MAX(updated_at) AS updated_at FROM (
+       SELECT owner_account_id AS acc, updated_at FROM events WHERE owner_account_id IS NOT NULL
+       UNION ALL
+       SELECT resolver_account_id AS acc, updated_at FROM events WHERE resolver_account_id IS NOT NULL
+     ) t GROUP BY acc`
+  );
+  return rows.map((r) => ({ accountId: r.acc, updatedAt: new Date(`${String(r.updated_at).replace(' ', 'T')}Z`).toISOString() }));
+}
+
+/**
+ * Remove a closed account's personal data: names and IDs on events, and any
+ * saved analysis that may mention them (it is recomputed on next view).
+ */
+export async function forgetAccount(accountId) {
+  const affected = await run(
+    'SELECT issue_id, project_id FROM events WHERE owner_account_id = ? OR resolver_account_id = ?',
+    [accountId, accountId]
+  );
+  await run('UPDATE events SET owner_name = NULL, owner_account_id = NULL WHERE owner_account_id = ?', [accountId]);
+  await run('UPDATE events SET resolver_name = NULL, resolver_account_id = NULL WHERE resolver_account_id = ?', [accountId]);
+  const projects = [...new Set(affected.map((r) => String(r.project_id)))];
+  for (const pid of projects) await run('DELETE FROM analysis WHERE project_id = ?', [pid]);
+  return affected.length;
 }
 
 // ---------- links ----------

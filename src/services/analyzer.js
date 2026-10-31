@@ -101,6 +101,8 @@ export async function analyzeIssue(issueIdOrKey) {
     sopRef: existing?.sopRef || findSopRef(fullText),
     ownerName: existing?.ownerName || fields.reporter?.displayName || null,
     resolverName: existing?.resolverName || (isDone ? fields.assignee?.displayName || null : null),
+    ownerAccountId: existing?.isDemo ? null : existing?.ownerAccountId || fields.reporter?.accountId || null,
+    resolverAccountId: existing?.isDemo ? null : existing?.resolverAccountId || (isDone ? fields.assignee?.accountId || null : null),
     eventDate: existing?.eventDate || String(fields.created).slice(0, 10),
     closedDate: existing?.isDemo ? existing.closedDate : fields.resolutiondate ? String(fields.resolutiondate).slice(0, 10) : null,
     status: existing?.isDemo ? existing.status : isDone ? 'closed' : 'open',

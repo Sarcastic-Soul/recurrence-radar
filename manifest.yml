@@ -37,11 +37,16 @@ modules:
       events:
         - avi:jira:created:issue
         - avi:jira:updated:issue
+        - avi:jira:deleted:issue
     - key: rr-lifecycle-trigger
       function: lifecycle-trigger
       events:
         - avi:forge:installed:app
         - avi:forge:upgraded:app
+  scheduledTrigger:
+    - key: rr-privacy-report
+      function: privacy-trigger
+      interval: week
   consumer:
     - key: rr-analyze-consumer
       queue: rr-analyze
@@ -60,6 +65,8 @@ modules:
       handler: index.issueTrigger
     - key: lifecycle-trigger
       handler: index.lifecycleTrigger
+    - key: privacy-trigger
+      handler: index.privacyTrigger
     - key: analyze-consumer
       handler: index.consumerHandler
       timeoutSeconds: 600

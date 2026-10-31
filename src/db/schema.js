@@ -80,7 +80,11 @@ const runner = migrationRunner
       state VARCHAR(16) NOT NULL,
       updated_at DATETIME NOT NULL
     )`
-  );
+  )
+  // Account IDs of the reporter / resolver, kept so we can honour Atlassian's
+  // personal data reporting (closed accounts get their data removed).
+  .enqueue('v009_events_owner_account', 'ALTER TABLE events ADD COLUMN owner_account_id VARCHAR(128) NULL')
+  .enqueue('v010_events_resolver_account', 'ALTER TABLE events ADD COLUMN resolver_account_id VARCHAR(128) NULL');
 
 // Remember success for the life of this function instance (warm starts).
 let schemaReady = null;
