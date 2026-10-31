@@ -1,12 +1,12 @@
 # Privacy policy
 
-Last updated: 31 October 2026
+Last updated: 1 November 2026
 
 Recurrence Radar ("the app") is a Jira Cloud app built on Atlassian Forge.
 
 ## What data the app uses
 
-- Issue fields in the Jira projects an admin chooses to watch: summary, description, labels, status, dates, reporter and assignee display names, and issue links.
+- Issue fields in the Jira projects an admin chooses to watch: summary, description, labels, status, dates, reporter and assignee display names and Atlassian account IDs, and issue links.
 - App settings chosen by an admin (watched projects, labels, LLM on/off and daily cap).
 
 ## Where the data goes
@@ -23,7 +23,9 @@ Recurrence Radar ("the app") is a Jira Cloud app built on Atlassian Forge.
 
 ## Retention and deletion
 
-Data stays in the app's Forge SQL storage while the app is installed. Uninstalling the app removes its storage, as handled by the Forge platform.
+- When an issue is deleted, the app deletes what it stored for that issue.
+- Once a week the app reports the account IDs it holds through Atlassian's personal data reporting API. For any closed account, the app deletes the stored names and account IDs.
+- Other data stays in the app's Forge SQL storage while the app is installed. Uninstalling the app removes its storage, as handled by the Forge platform.
 
 ## Contact
 
