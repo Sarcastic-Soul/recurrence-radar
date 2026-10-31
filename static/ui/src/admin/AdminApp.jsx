@@ -368,10 +368,19 @@ function SettingsSection({ setup, onSaved }) {
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const disabled = !setup?.isAdmin;
+  // The saved settings the form was last filled from.
+  const syncedRef = useRef(null);
 
+  // Refill the form when the saved settings change elsewhere (for example the
+  // demo loader adds its project to the watched list), unless the user has
+  // unsaved edits we would overwrite.
   useEffect(() => {
-    if (setup?.settings && !form) setForm(setup.settings);
-  }, [setup, form]);
+    if (!setup?.settings) return;
+    const next = JSON.stringify(setup.settings);
+    if (next === syncedRef.current) return;
+    setForm((f) => (!f || JSON.stringify(f) === syncedRef.current ? setup.settings : f));
+    syncedRef.current = next;
+  }, [setup]);
 
   const dirty = useMemo(() => form && JSON.stringify(form) !== JSON.stringify(setup?.settings), [form, setup]);
   const set = (key, value) => setForm((f) => ({ ...f, [key]: value }));
@@ -543,7 +552,7 @@ function SettingsSection({ setup, onSaved }) {
 // ---------------------------------------------------------------- aside
 const DEMO_SUMMARY = 'Tablet weight out of spec on Press 4 during compression, batch B2291';
 const DEMO_DESCRIPTION =
-  'During routine IPC checks at 35 min, tablet weights on Press 4 trended low (average 487 mg, limit 495–505 mg). Compression stopped and the batch put on hold.';
+  'The 15-minute in-process weight check on press 4 failed: average tablet weight 1,037 mg against 1,000 mg target. Batch on hold. Maintenance asked to inspect the punches.';
 
 function TryIt() {
   const [copied, setCopied] = useState('');

@@ -29,6 +29,22 @@ function daysAgoToDate(daysAgo, base) {
   return new Date(base.getTime() - daysAgo * DAY).toISOString().slice(0, 10);
 }
 
+/**
+ * Retry a Jira call a few times. Jira sometimes answers 403 "Tenant is
+ * restricted" or 429/5xx for a short while; a later try usually works.
+ */
+async function withRetry(fn, tries = 4) {
+  for (let i = 1; ; i += 1) {
+    try {
+      return await fn();
+    } catch (err) {
+      const transient = err.status === 429 || err.status >= 500 || /restricted/i.test(err.message || '');
+      if (!transient || i >= tries) throw err;
+      await new Promise((r) => setTimeout(r, 1500 * i));
+    }
+  }
+}
+
 /** Run async work over items, a few at a time (keeps us under Jira rate limits). */
 async function inBatches(items, size, fn) {
   const out = [];
@@ -161,7 +177,7 @@ export async function seedDemo({ projectId, projectKey }) {
     }
     await inBatches(linkPairs, 5, async ([c, d]) => {
       await addLink(c.id, d.id);
-      await linkIssues(d.key, c.key).catch((err) => console.warn('link failed', err.message));
+      await withRetry(() => linkIssues(d.key, c.key)).catch((err) => console.warn('link failed', err.message));
     });
 
     // ----- 4. move closed records to Done (best effort) -----
@@ -171,7 +187,7 @@ export async function seedDemo({ projectId, projectKey }) {
       try {
         const { transitions = [] } = await getTransitions(toClose[0].key);
         const done = transitions.find((t) => t.to?.statusCategory?.key === 'done') || transitions.find((t) => /done|close|resolve/i.test(t.name));
-        if (done) await inBatches(toClose, 5, (c) => doTransition(c.key, done.id).catch(() => null));
+        if (done) await inBatches(toClose, 5, (c) => withRetry(() => doTransition(c.key, done.id)).catch(() => null));
       } catch (err) {
         console.warn('closing demo issues failed', err.message);
       }
