@@ -19,7 +19,7 @@ Built on Atlassian Forge for Codegeist 2026. All data stays inside Atlassian (Fo
 4. Create a new issue in that project, for example:
    - Summary: `Tablet weight out of spec on Press 4 during compression, batch B2291`
    - Description: `The 15-minute in-process weight check on press 4 failed: average tablet weight 1,037 mg against 1,000 mg target. Batch on hold. Maintenance asked to inspect the punches.`
-5. Open the issue. The **Recurrence check** glance shows **High**, and the panel says the Press 4 punch CAPA closed in April and the problem has come back 3 times since. It names Ravi Patel as the person who fixed it each time and points at SOP-012.
+5. Open the issue. The **Recurrence check** glance shows **High**, and the panel says the Press 4 punch CAPA was closed months ago and the problem has come back 3 times since. It names Ravi Patel as the person who fixed it each time and points at SOP-012.
 6. Click **Draft investigation**, review the text, and post it as a comment.
 7. Open the project sidebar item **Recurrence Radar** for the overview: open high-risk deviations, CAPAs that did not hold, top equipment and failure modes, and an 18-month timeline.
 
