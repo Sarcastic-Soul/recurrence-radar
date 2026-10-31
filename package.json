@@ -1,15 +1,23 @@
 {
-  "name": "jira-issue-panel-custom-ui",
-  "version": "1.2.46-next.8",
+  "name": "recurrence-radar",
+  "version": "1.0.0",
+  "description": "Jira app that spots repeat deviations and CAPAs that did not work.",
   "main": "index.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "test": "node --test 'test/*.test.js'",
+    "build:ui": "npm --prefix static/ui run build",
+    "lint": "eslint src"
+  },
   "devDependencies": {
-    "eslint": "^8.56.0",
-    "eslint-plugin-react-hooks": "^4.6.0"
+    "eslint": "^8.56.0"
   },
   "dependencies": {
-    "@forge/resolver": "2.0.2-next.0",
-    "@forge/api": "8.4.0-next.8"
+    "@forge/api": "^8.4.0",
+    "@forge/events": "^3.0.9",
+    "@forge/llm": "^1.0.9",
+    "@forge/resolver": "^2.0.2",
+    "@forge/sql": "^4.0.9"
   }
 }

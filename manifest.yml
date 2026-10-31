@@ -1,21 +1,85 @@
 modules:
   jira:issuePanel:
-    - key: recurrence-radar-hello-world-panel
-      resource: main
+    - key: rr-issue-panel
+      resource: panel
       resolver:
         function: resolver
       viewportSize: medium
-      title: recurrence-radar
-      icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
+      title: Recurrence Radar
+      icon: resource:panel;icon.svg
+  jira:issueGlance:
+    - key: rr-issue-glance
+      resource: glance
+      resolver:
+        function: resolver
+      title: Recurrence Radar
+      label: Recurrence check
+      status:
+        type: lozenge
+        value:
+          label: Check
+          type: default
+  jira:adminPage:
+    - key: rr-admin-page
+      resource: admin
+      resolver:
+        function: resolver
+      title: Recurrence Radar
+  jira:projectPage:
+    - key: rr-project-page
+      resource: overview
+      resolver:
+        function: resolver
+      title: Recurrence Radar
+  trigger:
+    - key: rr-issue-trigger
+      function: issue-trigger
+      events:
+        - avi:jira:created:issue
+        - avi:jira:updated:issue
+    - key: rr-lifecycle-trigger
+      function: lifecycle-trigger
+      events:
+        - avi:forge:installed:app
+        - avi:forge:upgraded:app
+  consumer:
+    - key: rr-analyze-consumer
+      queue: rr-analyze
+      resolver:
+        function: analyze-consumer
+        method: analyze
+  sql:
+    - key: main
+      engine: mysql
+  llm:
+    - key: rr-llm
+      model:
+        - claude
   function:
     - key: resolver
-      handler: index.handler
+      handler: index.resolverHandler
+    - key: issue-trigger
+      handler: index.issueTrigger
+    - key: lifecycle-trigger
+      handler: index.lifecycleTrigger
+    - key: analyze-consumer
+      handler: index.consumerHandler
+      timeoutSeconds: 300
 resources:
-  - key: main
-    path: static/hello-world/build
+  - key: panel
+    path: static/ui/build/panel
+  - key: glance
+    path: static/ui/build/glance
+  - key: admin
+    path: static/ui/build/admin
+  - key: overview
+    path: static/ui/build/overview
 permissions:
   scopes:
     - read:jira-work
+    - write:jira-work
+    - read:jira-user
+    - manage:jira-project
 app:
   runtime:
     name: nodejs24.x
