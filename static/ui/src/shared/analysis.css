@@ -1,0 +1,303 @@
+/* ---------- verdict strip ---------- */
+.rr-verdict {
+  position: relative;
+  padding: 12px 16px 12px 20px;
+  border-radius: var(--rr-radius-lg);
+  background: var(--tone-bg);
+}
+.rr-verdict::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: var(--rr-radius-lg) 0 0 var(--rr-radius-lg);
+  background: var(--tone-border);
+}
+.rr-verdict.rr-tone-neutral {
+  background: var(--ds-surface-sunken);
+}
+.rr-verdict-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.rr-verdict .rr-lozenge {
+  background: var(--ds-surface);
+}
+.rr-verdict-hint {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tone-text);
+}
+.rr-verdict-recheck {
+  margin-left: auto;
+}
+.rr-headline {
+  margin-top: 8px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ds-text);
+  text-wrap: pretty;
+}
+.rr-verdict-stats {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--ds-text-subtle);
+}
+.rr-verdict.is-compact {
+  padding: 8px 12px 8px 16px;
+}
+.rr-verdict.is-compact .rr-headline {
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+/* ---------- CAPA callout ---------- */
+.rr-capa {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--tone-border);
+  border-radius: var(--rr-radius-lg);
+  background: var(--ds-surface);
+}
+.rr-capa.is-muted {
+  border-style: dashed;
+  border-color: var(--ds-border);
+  background: var(--ds-surface-sunken);
+}
+.rr-capa-icon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--tone-icon);
+}
+.rr-capa-body {
+  min-width: 0;
+  flex: 1;
+}
+.rr-capa-title {
+  font-weight: 700;
+  color: var(--tone-text);
+}
+.rr-capa.is-muted .rr-capa-title {
+  color: var(--ds-text-subtle);
+  font-weight: 600;
+}
+.rr-capa-line {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: 4px;
+  min-width: 0;
+}
+.rr-capa-summary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rr-capa-detail {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ds-text-subtle);
+}
+.rr-capa-since {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin-top: 8px;
+  color: var(--tone-text);
+}
+.rr-capa-keys {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- CAPA timeline ---------- */
+.rr-tl {
+  position: relative;
+  height: 52px;
+  margin-top: 8px;
+}
+.rr-tl-axis {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 26px;
+  height: 1px;
+  background: var(--ds-border-bold);
+}
+.rr-tl-after {
+  position: absolute;
+  right: 4%;
+  top: 25px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--tone-border);
+  opacity: 0.55;
+}
+.rr-tl-marker {
+  position: absolute;
+  top: 12px;
+  height: 28px;
+  width: 0;
+  border-left: 2px dashed var(--ds-text-subtle);
+  transform: translateX(-1px);
+}
+.rr-tl-marker-label {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  transform: translateX(-50%);
+  margin-bottom: 0;
+  font-size: 11px;
+  line-height: 12px;
+  font-weight: 600;
+  color: var(--ds-text-subtle);
+  white-space: nowrap;
+}
+.rr-tl-dot {
+  position: absolute;
+  top: 22px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--ds-text-subtlest);
+  box-shadow: 0 0 0 2px var(--ds-surface);
+}
+.rr-tl-dot.is-after {
+  background: var(--tone-icon);
+}
+.rr-tl-dot.is-now {
+  background: var(--ds-surface);
+  border: 2px solid var(--tone-icon);
+}
+.rr-tl-tick {
+  position: absolute;
+  top: 36px;
+  transform: translateX(-50%);
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--ds-text-subtlest);
+  white-space: nowrap;
+}
+.rr-tl-tick:first-of-type {
+  transform: none;
+}
+.rr-tl-tick.is-end {
+  transform: translateX(-100%);
+}
+
+/* ---------- sections ---------- */
+.rr-section {
+  margin-top: 20px;
+}
+.rr-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ds-border);
+}
+.rr-section-aside {
+  font-weight: 600;
+}
+
+/* ---------- match list (ledger) ---------- */
+.rr-match-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rr-match {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--ds-border);
+}
+.rr-match-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.rr-match-date {
+  font-size: 12px;
+  color: var(--ds-text-subtle);
+  white-space: nowrap;
+}
+.rr-match-spacer {
+  flex: 1;
+}
+.rr-match-summary {
+  margin-top: 2px;
+  color: var(--ds-text);
+}
+.rr-match.is-compact .rr-match-summary {
+  font-size: 13px;
+  line-height: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.rr-match-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.rr-match-meta {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ds-text-subtlest);
+}
+
+/* ---------- pending ---------- */
+.rr-pending {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--rr-radius-lg);
+  background: var(--ds-surface-sunken);
+}
+.rr-pending-sweep {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--ds-border-bold);
+  background:
+    radial-gradient(circle, var(--ds-surface-sunken) 0 5px, transparent 6px),
+    repeating-radial-gradient(circle, transparent 0 8px, var(--ds-border) 8px 9px);
+  overflow: hidden;
+}
+.rr-pending-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--ds-icon-information) 0deg, transparent 70deg);
+  opacity: 0.55;
+  animation: rr-spin 1.6s linear infinite;
+}
+
+.rr-inline-error {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--rr-radius);
+  font-size: 12px;
+  color: var(--ds-text-warning);
+  background: var(--ds-background-warning);
+}

@@ -1,0 +1,120 @@
+/*
+ * Local copies of Atlassian design token values.
+ * Used ONLY when the page runs outside Jira (dev / mock mode) or when
+ * view.theme.enable() fails. Inside Jira the real --ds-* variables from
+ * the product theme are used, including the user's dark mode.
+ */
+html.rr-local-tokens {
+  --ds-text: #172b4d;
+  --ds-text-subtle: #44546f;
+  --ds-text-subtlest: #626f86;
+  --ds-text-inverse: #ffffff;
+  --ds-text-danger: #ae2e24;
+  --ds-text-warning: #a54800;
+  --ds-text-success: #216e4e;
+  --ds-text-information: #0055cc;
+  --ds-text-selected: #0c66e4;
+  --ds-link: #0c66e4;
+  --ds-link-pressed: #0055cc;
+  --ds-surface: #ffffff;
+  --ds-surface-sunken: #f7f8f9;
+  --ds-surface-raised: #ffffff;
+  --ds-surface-overlay: #ffffff;
+  --ds-background-neutral: #091e420f;
+  --ds-background-neutral-hovered: #091e4224;
+  --ds-background-neutral-pressed: #091e424f;
+  --ds-background-neutral-subtle-hovered: #091e420f;
+  --ds-background-neutral-subtle-pressed: #091e4224;
+  --ds-background-danger: #ffeceb;
+  --ds-background-danger-bold: #c9372c;
+  --ds-background-warning: #fff7d6;
+  --ds-background-warning-bold: #f5cd47;
+  --ds-background-success: #dcfff1;
+  --ds-background-success-bold: #1f845a;
+  --ds-background-information: #e9f2ff;
+  --ds-background-information-bold: #0c66e4;
+  --ds-background-brand-bold: #0c66e4;
+  --ds-background-brand-bold-hovered: #0055cc;
+  --ds-background-brand-bold-pressed: #09326c;
+  --ds-background-selected: #e9f2ff;
+  --ds-background-input: #ffffff;
+  --ds-background-disabled: #091e4208;
+  --ds-text-disabled: #091e424f;
+  --ds-border: #091e4224;
+  --ds-border-bold: #758195;
+  --ds-border-input: #8590a2;
+  --ds-border-focused: #388bff;
+  --ds-border-danger: #e2483d;
+  --ds-border-warning: #e56910;
+  --ds-border-success: #22a06b;
+  --ds-border-information: #1d7afc;
+  --ds-icon: #44546f;
+  --ds-icon-subtle: #626f86;
+  --ds-icon-danger: #c9372c;
+  --ds-icon-warning: #e56910;
+  --ds-icon-success: #22a06b;
+  --ds-icon-information: #1d7afc;
+  --ds-background-accent-gray-subtler: #dcdfe4;
+  --ds-background-accent-gray-subtle: #8590a2;
+  --ds-blanket: #091e427d;
+  --ds-shadow-overlay: 0px 8px 12px #091e4226, 0px 0px 1px #091e424f;
+  --ds-shadow-raised: 0px 1px 1px #091e4240, 0px 0px 1px #091e424f;
+}
+
+html.rr-local-tokens[data-color-mode='dark'] {
+  color-scheme: dark;
+  --ds-text: #b6c2cf;
+  --ds-text-subtle: #9fadbc;
+  --ds-text-subtlest: #8c9bab;
+  --ds-text-inverse: #1d2125;
+  --ds-text-danger: #fd9891;
+  --ds-text-warning: #fec195;
+  --ds-text-success: #7ee2b8;
+  --ds-text-information: #85b8ff;
+  --ds-text-selected: #579dff;
+  --ds-link: #579dff;
+  --ds-link-pressed: #85b8ff;
+  --ds-surface: #22272b;
+  --ds-surface-sunken: #161a1d;
+  --ds-surface-raised: #282e33;
+  --ds-surface-overlay: #282e33;
+  --ds-background-neutral: #a1bdd914;
+  --ds-background-neutral-hovered: #a6c5e229;
+  --ds-background-neutral-pressed: #bfdbf847;
+  --ds-background-neutral-subtle-hovered: #a1bdd914;
+  --ds-background-neutral-subtle-pressed: #a6c5e229;
+  --ds-background-danger: #42221f;
+  --ds-background-danger-bold: #f87168;
+  --ds-background-warning: #533f04;
+  --ds-background-warning-bold: #f5cd47;
+  --ds-background-success: #164b35;
+  --ds-background-success-bold: #4bce97;
+  --ds-background-information: #092957;
+  --ds-background-information-bold: #579dff;
+  --ds-background-brand-bold: #579dff;
+  --ds-background-brand-bold-hovered: #85b8ff;
+  --ds-background-brand-bold-pressed: #cce0ff;
+  --ds-background-selected: #1c2b41;
+  --ds-background-input: #22272b;
+  --ds-background-disabled: #bcd6f00a;
+  --ds-text-disabled: #bfdbf847;
+  --ds-border: #a6c5e229;
+  --ds-border-bold: #738496;
+  --ds-border-input: #738496;
+  --ds-border-focused: #85b8ff;
+  --ds-border-danger: #f15b50;
+  --ds-border-warning: #f38a3f;
+  --ds-border-success: #2abb7f;
+  --ds-border-information: #388bff;
+  --ds-icon: #9fadbc;
+  --ds-icon-subtle: #8c9bab;
+  --ds-icon-danger: #f15b50;
+  --ds-icon-warning: #f38a3f;
+  --ds-icon-success: #2abb7f;
+  --ds-icon-information: #388bff;
+  --ds-background-accent-gray-subtler: #38414a;
+  --ds-background-accent-gray-subtle: #596773;
+  --ds-blanket: #10121499;
+  --ds-shadow-overlay: 0px 0px 0px 1px #39424a, 0px 8px 12px #0304045c, 0px 0px 1px 1px #03040480;
+  --ds-shadow-raised: 0px 0px 0px 1px #00000000, 0px 1px 1px #03040480, 0px 0px 1px #03040480;
+}
