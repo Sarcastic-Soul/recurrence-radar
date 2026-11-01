@@ -18,7 +18,7 @@ Recurrence Radar ("the app") is a Jira Cloud app built on Atlassian Forge.
 ## What the app writes to Jira
 
 - A `recurrence-high` label and an issue property with the latest result on analysed issues.
-- Comments, only when a user clicks "Post as comment" (posted as that user).
+- Comments, only when a user clicks "Post as comment". The comment is posted by the app and names the person who posted it.
 - Demo issues and a demo project, only when an admin loads demo data. These can be removed from the settings page.
 
 ## Retention and deletion

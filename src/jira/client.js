@@ -73,7 +73,7 @@ export function removeLabels(idOrKey, labels, as = 'app') {
   });
 }
 
-export function addComment(idOrKey, adfBody, as = 'user') {
+export function addComment(idOrKey, adfBody, as = 'app') {
   return call(as, route`/rest/api/3/issue/${idOrKey}/comment`, {
     method: 'POST',
     body: JSON.stringify({ body: adfBody }),
@@ -112,7 +112,7 @@ export function linkIssues(inwardKey, outwardKey, typeName = 'Relates', as = 'ap
 
 // ---------- projects ----------
 
-export async function listProjects(as = 'user') {
+export async function listProjects(as = 'app') {
   const body = await call(as, route`/rest/api/3/project/search?maxResults=100&orderBy=name`);
   return (body.values || []).map((p) => ({ id: String(p.id), key: p.key, name: p.name }));
 }
@@ -127,7 +127,7 @@ export async function getCreateIssueTypes(projectIdOrKey, as = 'app') {
   return body.issueTypes || body.values || [];
 }
 
-export function createProject({ key, name, leadAccountId }, as = 'user') {
+export function createProject({ key, name, leadAccountId }, as = 'app') {
   return call(as, route`/rest/api/3/project`, {
     method: 'POST',
     body: JSON.stringify({
@@ -142,9 +142,10 @@ export function createProject({ key, name, leadAccountId }, as = 'user') {
   });
 }
 
-export async function hasGlobalAdmin(as = 'user') {
-  const body = await call(as, route`/rest/api/3/mypermissions?permissions=ADMINISTER`);
-  return Boolean(body?.permissions?.ADMINISTER?.havePermission);
+/** Display name for an account ID, or null. */
+export async function getUserName(accountId, as = 'app') {
+  const body = await call(as, route`/rest/api/3/user?accountId=${accountId}`);
+  return body?.displayName || null;
 }
 
 // ---------- ADF helpers ----------

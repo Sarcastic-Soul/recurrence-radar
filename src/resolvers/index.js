@@ -15,7 +15,7 @@ import { getSettings, saveSettings, getDemoState, setDemoState } from '../servic
 import { llmStatus, canUseLlm, complete } from '../services/llm';
 import { enqueue } from '../services/queue';
 import { buildOverview } from '../services/overview';
-import { listProjects, createProject, addComment, hasGlobalAdmin } from '../jira/client';
+import { listProjects, createProject, addComment, getUserName } from '../jira/client';
 
 const resolver = new Resolver();
 
@@ -85,31 +85,39 @@ resolver.define('postDraft', async ({ payload, context }) => {
   const { issueKey } = issueFromContext(context);
   const text = String(payload?.text || '').trim();
   if (!text) throw new Error('Draft is empty.');
-  const header = 'Investigation draft (Recurrence Radar, decision support — review before use)\n\n';
-  const res = await addComment(issueKey, toAdf(header + text), 'user');
+  // Posted as the app (no per-user consent needed), naming who posted it.
+  const name = context?.accountId ? await getUserName(context.accountId).catch(() => null) : null;
+  const by = name ? `, posted by ${name}` : '';
+  const header = `Investigation draft (Recurrence Radar${by}; decision support, review before use)\n\n`;
+  const res = await addComment(issueKey, toAdf(header + text), 'app');
   return { ok: true, commentId: res?.id };
 });
 
 // ---------- admin page ----------
 
 /**
- * Log a failed asUser call and fall back. If the user has not granted the app
- * access yet, rethrow so Forge shows its "Allow access" prompt instead of the
- * page silently treating them as a non-admin.
+ * Settings changes are only accepted from the admin page module. Jira shows
+ * that module to Jira admins only, so the app does not need to call Jira as
+ * the user (which would need per-user consent) to check.
  */
-function userCallFailed(what, err, fallback) {
-  if (err?.name === 'NEEDS_AUTHENTICATION_ERR') throw err;
-  console.warn(`${what} as user failed`, err?.name, err?.status, err?.message);
-  return fallback;
+const ADMIN_MODULE = 'rr-admin-page';
+function isAdminContext(context) {
+  return context?.moduleKey === ADMIN_MODULE || context?.extension?.type === 'jira:adminPage';
+}
+function requireAdmin(context) {
+  if (!isAdminContext(context)) throw new Error('Only Jira admins can change Recurrence Radar settings.');
 }
 
-resolver.define('getSetup', async () => {
+resolver.define('getSetup', async ({ context }) => {
   const settings = await getSettings();
   const [projects, demo, llm, isAdmin] = await Promise.all([
-    listProjects('user').catch((err) => userCallFailed('listProjects', err, [])),
+    listProjects('app').catch((err) => {
+      console.warn('listProjects failed', err?.status, err?.message);
+      return [];
+    }),
     getDemoState(),
     llmStatus(settings),
-    hasGlobalAdmin('user').catch((err) => userCallFailed('hasGlobalAdmin', err, false)),
+    isAdminContext(context),
   ]);
   return {
     projects,
@@ -121,13 +129,14 @@ resolver.define('getSetup', async () => {
 });
 
 resolver.define('seedDemo', async ({ payload, context }) => {
+  requireAdmin(context);
   const demo = await getDemoState();
   if (demo.state === 'running' || demo.state === 'removing') return { ok: false, status: demo.state, message: 'Already in progress.' };
   if (demo.state === 'done') return { ok: false, status: 'done', message: 'Demo data is already loaded. Remove it first.' };
 
   let projectKey = payload?.projectKey;
   let projectId = null;
-  const projects = await listProjects('user');
+  const projects = await listProjects('app');
 
   if (payload?.createProject) {
     // Find a free project key like NWQA, NWQA2, ...
@@ -140,7 +149,7 @@ resolver.define('seedDemo', async ({ payload, context }) => {
     } else {
       const used = new Set(projects.map((p) => p.key));
       projectKey = ['NWQA', 'NWQA2', 'NWQA3', 'NWQA4', 'NWQA5'].find((k) => !used.has(k));
-      const created = await createProject({ key: projectKey, name: DEMO_NAME, leadAccountId: context.accountId }, 'user');
+      const created = await createProject({ key: projectKey, name: DEMO_NAME, leadAccountId: context.accountId }, 'app');
       projectId = String(created.id);
     }
   } else {
@@ -154,7 +163,8 @@ resolver.define('seedDemo', async ({ payload, context }) => {
   return { ok: true, status: 'running', projectKey };
 });
 
-resolver.define('removeDemo', async () => {
+resolver.define('removeDemo', async ({ context }) => {
+  requireAdmin(context);
   const demo = await getDemoState();
   if (demo.state === 'running' || demo.state === 'removing') return { ok: false, status: demo.state };
   await setDemoState({ ...demo, state: 'removing' });
@@ -162,7 +172,8 @@ resolver.define('removeDemo', async () => {
   return { ok: true, status: 'removing' };
 });
 
-resolver.define('saveSettings', async ({ payload }) => {
+resolver.define('saveSettings', async ({ payload, context }) => {
+  requireAdmin(context);
   const settings = await saveSettings(payload || {});
   return { ok: true, settings };
 });
