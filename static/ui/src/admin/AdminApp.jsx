@@ -275,7 +275,7 @@ function DemoSection({ setup, reload }) {
                 <span>
                   Delete{' '}
                   {plural((demo.counts?.DEV ?? 0) + (demo.counts?.CAPA ?? 0) + (demo.counts?.SOP ?? 0), 'demo issue')}?
-                  Real issues are not touched.
+                  Test issues in the demo project go too. Other projects are not touched.
                 </span>
                 <Button variant="danger" className="rr-btn-sm" onClick={remove} loading={busy}>
                   Delete
