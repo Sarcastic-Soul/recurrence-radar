@@ -23,7 +23,7 @@ Built on Atlassian Forge for Codegeist 2026. All data stays inside Atlassian (Fo
 6. Click **Draft investigation**, review the text, and post it as a comment.
 7. Open the project sidebar item **Recurrence Radar** for the overview: open high-risk deviations, CAPAs that did not hold, top equipment and failure modes, and an 18-month timeline.
 
-To remove the demo, use **Remove demo data** on the same settings page.
+To remove the demo, use **Remove demo data** on the same settings page. In the app-created demo project this also deletes issues you created while trying it out.
 
 ## Using it on real data
 

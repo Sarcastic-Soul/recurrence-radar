@@ -14,6 +14,7 @@ import {
 import { getSettings, saveSettings, getDemoState, setDemoState } from '../services/settings';
 import { llmStatus, canUseLlm, complete } from '../services/llm';
 import { enqueue } from '../services/queue';
+import { DEMO_PROJECT_NAME as DEMO_NAME } from '../services/demo';
 import { buildOverview } from '../services/overview';
 import { listProjects, createProject, addComment, getUserName } from '../jira/client';
 
@@ -140,7 +141,6 @@ resolver.define('seedDemo', async ({ payload, context }) => {
 
   if (payload?.createProject) {
     // Find a free project key like NWQA, NWQA2, ...
-    const DEMO_NAME = 'Northwind Quality (demo)';
     const existingDemo = projects.find((p) => p.name === DEMO_NAME);
     if (existingDemo) {
       // A demo project from an earlier run is still there: reuse it.

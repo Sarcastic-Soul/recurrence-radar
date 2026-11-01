@@ -16,11 +16,15 @@ import {
   doTransition,
   linkIssues,
   deleteIssue,
+  getProject,
+  searchIssueIds,
 } from '../jira/client';
 import { upsertEvent, addLink, getDemoEvents, deleteEvent, getEventsForProjects, getAllLinks } from '../db/queries';
 import { getSettings, addWatchedProject, setDemoState, getDemoState } from './settings';
 import { analyzeStoredEvent, DEMO_LABEL } from './analyzer';
 import { extractRules } from '../core';
+
+export const DEMO_PROJECT_NAME = 'Northwind Quality (demo)';
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -221,6 +225,22 @@ export async function removeDemo() {
     await deleteEvent(e.issueId);
     deleted += 1;
   });
+  // In the app's own demo project, also delete issues people created while
+  // trying it out, so the next demo load starts clean.
+  if (prev.projectId) {
+    const project = await getProject(prev.projectId).catch(() => null);
+    if (project?.name === DEMO_PROJECT_NAME) {
+      const extra = await searchIssueIds(`project = ${project.id}`).catch((err) => {
+        console.warn('demo project search failed', err.message);
+        return [];
+      });
+      await inBatches(extra, 5, async (i) => {
+        await deleteIssue(i.id).catch((err) => console.warn('delete failed', i.key, err.message));
+        await deleteEvent(i.id);
+        deleted += 1;
+      });
+    }
+  }
   await setDemoState({ state: 'none', removedAt: new Date().toISOString(), deleted });
   return deleted;
 }

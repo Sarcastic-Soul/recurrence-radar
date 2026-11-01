@@ -117,6 +117,21 @@ export async function listProjects(as = 'app') {
   return (body.values || []).map((p) => ({ id: String(p.id), key: p.key, name: p.name }));
 }
 
+/** Issue IDs and keys matching a JQL query (up to `max`). */
+export async function searchIssueIds(jql, max = 500, as = 'app') {
+  const out = [];
+  let nextPageToken;
+  do {
+    const body = await call(as, route`/rest/api/3/search/jql`, {
+      method: 'POST',
+      body: JSON.stringify({ jql, fields: ['summary'], maxResults: 100, nextPageToken }),
+    });
+    for (const i of body.issues || []) out.push({ id: String(i.id), key: i.key });
+    nextPageToken = body.nextPageToken;
+  } while (nextPageToken && out.length < max);
+  return out;
+}
+
 export function getProject(idOrKey, as = 'app') {
   return call(as, route`/rest/api/3/project/${idOrKey}`);
 }
