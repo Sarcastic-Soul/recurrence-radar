@@ -92,13 +92,24 @@ resolver.define('postDraft', async ({ payload, context }) => {
 
 // ---------- admin page ----------
 
+/**
+ * Log a failed asUser call and fall back. If the user has not granted the app
+ * access yet, rethrow so Forge shows its "Allow access" prompt instead of the
+ * page silently treating them as a non-admin.
+ */
+function userCallFailed(what, err, fallback) {
+  if (err?.name === 'NEEDS_AUTHENTICATION_ERR') throw err;
+  console.warn(`${what} as user failed`, err?.name, err?.status, err?.message);
+  return fallback;
+}
+
 resolver.define('getSetup', async () => {
   const settings = await getSettings();
   const [projects, demo, llm, isAdmin] = await Promise.all([
-    listProjects('user').catch(() => []),
+    listProjects('user').catch((err) => userCallFailed('listProjects', err, [])),
     getDemoState(),
     llmStatus(settings),
-    hasGlobalAdmin('user').catch(() => false),
+    hasGlobalAdmin('user').catch((err) => userCallFailed('hasGlobalAdmin', err, false)),
   ]);
   return {
     projects,

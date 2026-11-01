@@ -413,7 +413,7 @@ function SettingsSection({ setup, onSaved }) {
   return (
     <section className="rr-admin-section" aria-labelledby="rr-settings-h">
       <div className="rr-admin-section-head">
-        <h2 id="rr-settings-h">Settings</h2>
+        <h2 id="rr-settings-h">Projects and AI</h2>
       </div>
       {!form ? (
         <div className="rr-settings-skel">
