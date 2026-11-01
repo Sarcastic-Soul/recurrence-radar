@@ -6,3 +6,4 @@ export { consumerHandler } from './consumers/analyze';
 export { issueTrigger } from './triggers/issue';
 export { lifecycleTrigger } from './triggers/lifecycle';
 export { privacyTrigger } from './triggers/privacy';
+export { glanceStatus } from './glance';

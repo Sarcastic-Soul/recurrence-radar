@@ -27,8 +27,6 @@ import { listProjects } from '../jira/client';
 export const HIGH_LABEL = 'recurrence-high';
 export const DEMO_LABEL = 'rr-demo';
 export const PROPERTY_KEY = 'recurrence-radar';
-const APP_UUID = '8ed0b7f6-9b89-454e-8a68-85e9c99daf0b';
-const GLANCE_STATUS_KEY = `com.atlassian.jira.issue:${APP_UUID}:rr-issue-glance:status`;
 
 /** Decide what kind of quality record an issue is, from its labels. */
 export function kindFromLabels(labels, settings) {
@@ -63,6 +61,13 @@ export async function analyzeIssue(issueIdOrKey) {
 
   const kind = kindFromLabels(fields.labels, settings);
   const existing = await getEvent(issueId);
+
+  // Demo issues are scored by the demo loader itself. A trigger can fire
+  // before the loader has saved the issue; skip it so we don't spend LLM calls.
+  if ((fields.labels || []).includes(DEMO_LABEL) && !existing) {
+    await setJobState(issueId, 'done');
+    return { status: 'not_tracked' };
+  }
   const description = adfToText(fields.description).trim();
   const fullText = `${fields.summary}\n${description}`;
   const hash = textHash(fullText);
@@ -144,7 +149,7 @@ export async function analyzeStoredEvent(event, events, links, settings) {
   return analysis;
 }
 
-/** Label + issue property + glance lozenge so the result is visible outside the panel. */
+/** Label + issue property so the result is visible outside the panel (the glance reads SQL itself). */
 export async function reflectOnIssue(issue, analysis) {
   const labels = issue.fields?.labels || [];
   const isHigh = analysis.level === 'HIGH';
@@ -159,13 +164,6 @@ export async function reflectOnIssue(issue, analysis) {
     computedAt: analysis.computedAt,
   });
 
-  const lozenge = {
-    HIGH: { label: 'High', type: 'removed' },
-    MEDIUM: { label: 'Medium', type: 'moved' },
-    LOW: { label: 'Low', type: 'default' },
-    NONE: { label: 'None', type: 'success' },
-  }[analysis.level];
-  await setIssueProperty(issue.key, GLANCE_STATUS_KEY, { type: 'lozenge', value: lozenge }).catch(() => {});
 }
 
 function findSopRef(text) {

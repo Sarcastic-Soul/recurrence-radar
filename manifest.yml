@@ -14,11 +14,8 @@ modules:
         function: resolver
       title: Recurrence Radar
       label: Recurrence check
-      status:
-        type: lozenge
-        value:
-          label: Check
-          type: default
+      dynamicProperties:
+        function: glance-status
   jira:adminPage:
     - key: rr-admin-page
       resource: admin
@@ -65,6 +62,8 @@ modules:
       handler: index.issueTrigger
     - key: lifecycle-trigger
       handler: index.lifecycleTrigger
+    - key: glance-status
+      handler: index.glanceStatus
     - key: privacy-trigger
       handler: index.privacyTrigger
     - key: analyze-consumer

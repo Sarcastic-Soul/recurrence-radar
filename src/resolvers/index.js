@@ -120,10 +120,18 @@ resolver.define('seedDemo', async ({ payload, context }) => {
 
   if (payload?.createProject) {
     // Find a free project key like NWQA, NWQA2, ...
-    const used = new Set(projects.map((p) => p.key));
-    projectKey = ['NWQA', 'NWQA2', 'NWQA3', 'NWQA4', 'NWQA5'].find((k) => !used.has(k));
-    const created = await createProject({ key: projectKey, name: 'Northwind Quality (demo)', leadAccountId: context.accountId }, 'user');
-    projectId = String(created.id);
+    const DEMO_NAME = 'Northwind Quality (demo)';
+    const existingDemo = projects.find((p) => p.name === DEMO_NAME);
+    if (existingDemo) {
+      // A demo project from an earlier run is still there: reuse it.
+      projectKey = existingDemo.key;
+      projectId = existingDemo.id;
+    } else {
+      const used = new Set(projects.map((p) => p.key));
+      projectKey = ['NWQA', 'NWQA2', 'NWQA3', 'NWQA4', 'NWQA5'].find((k) => !used.has(k));
+      const created = await createProject({ key: projectKey, name: DEMO_NAME, leadAccountId: context.accountId }, 'user');
+      projectId = String(created.id);
+    }
   } else {
     const p = projects.find((x) => x.key === projectKey);
     if (!p) throw new Error('Pick a project first.');
