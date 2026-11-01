@@ -64,6 +64,6 @@ forge install -e development
 
 ## Privacy
 
-See [PRIVACY.md](PRIVACY.md). Support: open an issue on this repository.
+See [PRIVACY.md](PRIVACY.md) and [TERMS.md](TERMS.md). Support: open an issue on this repository.
 
 Decision support only. Not a validated QMS of record. Always review results before acting on them.
