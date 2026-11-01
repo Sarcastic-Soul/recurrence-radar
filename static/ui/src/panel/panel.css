@@ -125,8 +125,6 @@
   margin-top: 12px;
 }
 .rr-draft-text {
-  max-height: 360px;
-  overflow: auto;
   font-size: 13px;
   line-height: 20px;
 }

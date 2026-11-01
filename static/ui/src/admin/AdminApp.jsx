@@ -50,7 +50,7 @@ export default function AdminApp() {
   return (
     <main className="rr-admin">
       <header className="rr-admin-head">
-        <h1>Recurrence Radar</h1>
+        <h1>Settings</h1>
         <p className="rr-subtle">
           Flags deviations that happened before, and CAPAs that did not stop them. Set it up here.
         </p>

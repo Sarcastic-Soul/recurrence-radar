@@ -163,7 +163,6 @@ export async function reflectOnIssue(issue, analysis) {
     capaStatus: analysis.capa?.status || 'none',
     computedAt: analysis.computedAt,
   });
-
 }
 
 function findSopRef(text) {

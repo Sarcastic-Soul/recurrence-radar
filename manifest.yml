@@ -4,7 +4,7 @@ modules:
       resource: panel
       resolver:
         function: resolver
-      viewportSize: medium
+      viewportSize: large
       title: Recurrence Radar
       icon: resource:panel;icon.svg
   jira:issueGlance:

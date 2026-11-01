@@ -47,7 +47,7 @@ export default function GlanceApp() {
         )}
         <p className="rr-glance-hint">
           <ArrowDown size={12} weight="bold" aria-hidden="true" />
-          Full details, experts and the investigation draft are in the Recurrence Radar panel on this issue.
+          For details, experts and an investigation draft, click the Recurrence Radar icon under the issue title.
         </p>
         <p className="rr-glance-meta">
           <MethodTag method={analysis.method} />
